@@ -113,9 +113,14 @@
 <script>
     function copyURL(val) {
         /* Copy the text inside the text field */
-        navigator.clipboard.writeText(val);
+        const sampleTextarea = document.createElement("textarea");
+        document.body.appendChild(sampleTextarea);
+        sampleTextarea.value = val; //save main text in it
+        sampleTextarea.select(); //select textarea contenrs
+        document.execCommand("copy");
+        document.body.removeChild(sampleTextarea);
         /* Alert the copied text */
-        alert("Copied the text: " + val);
+        alert('Copy Text '+ val);
     }
 
     $(function () {

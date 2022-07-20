@@ -14,7 +14,7 @@
                 <select name="ticket_id" id="ticket_id" class="form-control select2 ticket_id_change" required>
                     <option value="" selected>Select Ticket</option>
                     @foreach($tickets as $id => $ticket)
-                        <option value="{{ $ticket->id }}" data-cost="{{ $ticket->service->cost }}" data-service="{{ $ticket->service->name }}" data-user="{{ $ticket->user->name }}" {{ (old('ticket_id') == $ticket->id) ? 'selected' : '' }}>{{ $ticket->title .' - '. $ticket->id }}</option>
+                        <option value="{{ $ticket->id }}" data-cost="{{ $ticket->service->cost }}" data-service="{{ $ticket->service->name }}" data-user="{{ $ticket->user->name }}" {{ (old('ticket_id') == $ticket->id) ? 'selected' : '' }}>{{ $ticket->user->name .' - '. $ticket->title .' - '. $ticket->id }}</option>
                     @endforeach
                 </select>
                 @if($errors->has('ticket_id'))
@@ -56,7 +56,7 @@
             <div class="form-group {{ $errors->has('cost') ? 'has-error' : '' }}">
                 <label for="cost">{{ trans('cruds.links.fields.cost') }}*</label>
                 <input type="number" id="cost" name="cost" class="form-control cost_input" value="" min="100" disabled required>
-                <button class="btn btn-primary btn_edit" type="button">{{ trans('global.edit') }}</button>
+                <button class="btn btn-primary btn_edit" type="button">{{ trans('global.edit') }} Service {{ trans('cruds.links.fields.cost') }}</button>
                 @if($errors->has('cost'))
                     <em class="invalid-feedback">
                         {{ $errors->first('cost') }}
