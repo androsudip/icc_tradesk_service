@@ -4,6 +4,7 @@ Route::get('/',  function (){
 });
 Route::get('about',  function (){ return view('welcome'); })->name('about');
 Route::get('contact',  function (){ return view('welcome'); })->name('contact');
+Route::get('support',  function (){ return view('welcome'); })->name('support');
 Route::get('/home', function () {
     $route = Gate::denies('dashboard_access') ? 'admin.tickets.index' : 'admin.home';
     if (session('status')) {
@@ -55,7 +56,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     // Tickets
     Route::delete('tickets/destroy', 'TicketsController@massDestroy')->name('tickets.massDestroy');
     Route::post('tickets/media', 'TicketsController@storeMedia')->name('tickets.storeMedia');
-    Route::post('tickets/comment/{ticket}', 'TicketsController@storeComment')->name('tickets.storeComment');
+    Route::post('tickets/comment/{ticket}', 'TicketsControllerTicketsController@storeComment')->name('tickets.storeComment');
     Route::resource('tickets', 'TicketsController');
 
     //links

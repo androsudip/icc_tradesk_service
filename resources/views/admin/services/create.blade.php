@@ -82,7 +82,7 @@
 
             <div class="form-group {{ $errors->has('cost') ? 'has-error' : '' }}">
                 <label for="cost">{{ trans('cruds.services.fields.cost') }}*</label>
-                <input type="number" id="cost" name="cost" class="form-control" value="{{ old('cost', isset($services) ? $services->cost : '') }}" required>
+                <input type="number" id="cost" name="cost" class="form-control" min="100" value="{{ old('cost', isset($services) ? $services->cost : '') }}" required>
                 @if($errors->has('cost'))
                     <em class="invalid-feedback">
                         {{ $errors->first('cost') }}

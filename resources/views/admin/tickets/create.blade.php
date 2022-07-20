@@ -47,19 +47,7 @@
                     {{ trans('cruds.ticket.fields.attachments_helper') }}
                 </p>
             </div>
-            <div class="form-group {{ $errors->has('status_id') ? 'has-error' : '' }}">
-                <label for="status">{{ trans('cruds.ticket.fields.status') }}*</label>
-                <select name="status_id" id="status" class="form-control select2" required>
-                    @foreach($statuses as $id => $status)
-                        <option value="{{ $id }}" {{ (isset($ticket) && $ticket->status ? $ticket->status->id : old('status_id')) == $id ? 'selected' : '' }}>{{ $status }}</option>
-                    @endforeach
-                </select>
-                @if($errors->has('status_id'))
-                    <em class="invalid-feedback">
-                        {{ $errors->first('status_id') }}
-                    </em>
-                @endif
-            </div>
+
             <div class="form-group {{ $errors->has('priority_id') ? 'has-error' : '' }}">
                 <label for="priority">{{ trans('cruds.ticket.fields.priority') }}*</label>
                 <select name="priority_id" id="priority" class="form-control select2" required>
@@ -77,7 +65,8 @@
                 <label for="service_id">{{ trans('cruds.ticket.fields.service') }}*</label>
                 <select name="service_id" id="service_id" class="form-control select2" required>
                     @foreach($services as $id => $service)
-                        <option value="{{ $service->id }}" {{ (isset($service) && $service ? $service->id : old('service_id')) == $service->id ? 'selected' : '' }}>{{ $service->name .' - '. $service->id }}</option>
+                        <option value="" selected>Please Select</option>
+                        <option value="{{ $service->id }}" {{ old('service_id') == $service->id ? 'selected' : '' }}>{{ $service->name .' - '. $service->id }}</option>
                     @endforeach
                 </select>
                 @if($errors->has('service_id'))

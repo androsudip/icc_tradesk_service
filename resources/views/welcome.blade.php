@@ -69,16 +69,18 @@
                 <div class="top-right links">
                     @auth
                         <a href="{{ url('/home') }}">Dashboard</a>
+                        <a href="{{ route('admin.tickets.index') }}">Tickets</a>
                     @else
                         <a href="/">Home</a>
                         <a href="{{ route('about') }}">About Us</a>
                         <a href="{{ route('contact') }}">Contact Us</a>
-
+                        <a href="{{ route('admin.tickets.create') }}">Tickets</a>
                         <a href="{{ route('login') }}">Login</a>
 
                         @if (Route::has('register'))
                             <a href="{{ route('register') }}">Register</a>
                         @endif
+                        <a href="{{ route('support') }}">Support</a>
                     @endauth
                 </div>
             @endif
