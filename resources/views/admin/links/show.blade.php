@@ -49,6 +49,22 @@
                     </tr>
                     <tr>
                         <th>
+                            {{ trans('cruds.links.fields.cost') }}
+                        </th>
+                        <td>
+                            {{ $links->cost }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.links.fields.remarks') }}
+                        </th>
+                        <td>
+                            {{ $links->remarks }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
                             {{ trans('cruds.links.fields.link') }}
                         </th>
                         <th>

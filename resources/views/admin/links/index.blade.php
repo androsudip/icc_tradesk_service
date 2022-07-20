@@ -35,6 +35,12 @@
                             {{ trans('cruds.links.fields.user') }}
                         </th>
                         <th>
+                            {{ trans('cruds.links.fields.cost') }}
+                        </th>
+                        <th>
+                            {{ trans('cruds.links.fields.remarks') }}
+                        </th>
+                        <th>
                             {{ trans('cruds.links.fields.link') }}
                         </th>
                         <th>
@@ -61,7 +67,13 @@
                                 {{ $link->tickets->user->name ?? '' }}
                             </td>
                             <td>
-                                {{ $link->payment_url ?? '' }}
+                                {{ $link->cost ?? '' }}
+                            </td>
+                            <td>
+                                {{ $link->remarks ?? '' }}
+                            </td>
+                            <td>
+                                {{ $link->payment_url }} <button class="btn btn-primary" onclick="copyURL('{{ $link->payment_url }}')">Click to Copy</button>
                             </td>
                             <td>
                                 @can('link_generate_show')
@@ -99,6 +111,13 @@
 @section('scripts')
 @parent
 <script>
+    function copyURL(val) {
+        /* Copy the text inside the text field */
+        navigator.clipboard.writeText(val);
+        /* Alert the copied text */
+        alert("Copied the text: " + val);
+    }
+
     $(function () {
   let dtButtons = $.extend(true, [], $.fn.dataTable.defaults.buttons)
 @can('link_generate_delete')

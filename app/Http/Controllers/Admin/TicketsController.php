@@ -125,6 +125,7 @@ class TicketsController extends Controller
     {
         $request->request->add([
             'assigned_to_user_id'   => Auth::user()->id,
+            'status_id' => 1 //open
         ]);
         $ticket = Ticket::create($request->all());
 

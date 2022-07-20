@@ -22,10 +22,6 @@ class StoreTicketRequest extends FormRequest
             'title'       => [
                 'required',
             ],
-            'status_id'   => [
-                'required',
-                'integer',
-            ],
             'priority_id' => [
                 'required',
                 'integer',

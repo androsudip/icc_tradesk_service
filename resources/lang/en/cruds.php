@@ -218,7 +218,11 @@ return [
             'cost' => 'Cost',
             'cost_helper' => '',
             'user' => 'User',
-            'user_helper' => ''
+            'user_helper' => '',
+            'service' => 'Service Name',
+            'service_helper' => '',
+            'remarks' => 'Remarks',
+            'remarks_helper' => ''
         ],
     ],
     'services'       => [

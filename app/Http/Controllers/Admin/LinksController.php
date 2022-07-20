@@ -75,7 +75,7 @@ class LinksController extends Controller
      */
     public function create()
     {
-        $tickets = Ticket::with('service')->orderBy('created_at', 'desc')->get();
+        $tickets = Ticket::with('service','user')->orderBy('created_at', 'desc')->get();
         return view('admin.links.create', compact('tickets'));
     }
 
@@ -93,8 +93,9 @@ class LinksController extends Controller
         $ticket = Ticket::find($ticket_id);
         $user = User::find($ticket->assigned_to_user_id);
         $service = Service::find($ticket->service_id);
-        $cost = $request->cost;
-        $cost = number_format( $cost, 2);
+        $remarks = $request->remarks;
+        $cost = ($request->cost * 100);
+       // $cost = number_format( $cost, 2);
         $api = new Api(config('constant.razorpay_key'),config('constant.razorpay_secret'));
         $url = $api->paymentLink->create([
                 'amount' => (int)$cost,
@@ -121,9 +122,11 @@ class LinksController extends Controller
             $links = Link::insert([
                 'ticket_id' => $ticket_id,
                 'payment_url' => $url->short_url,
+                'cost' => $request->cost,
+                'remarks' => $remarks,
                 'status' => $url->status,
                 'payment_link_id' => $url->id,
-                'payment_link_json' => json_encode($url)
+                'payment_link_json' => json_encode($url->toArray()),
             ]);
         }
 
@@ -136,11 +139,11 @@ class LinksController extends Controller
      * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Link $links)
+    public function show($id)
     {
         abort_if(Gate::denies('link_generate_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $links = $links->with('tickets.user')->first();
+        $links = Link::with('tickets.user')->where('id',$id)->first();
         return view('admin.links.show', compact('links'));
     }
 
