@@ -56,7 +56,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     // Tickets
     Route::delete('tickets/destroy', 'TicketsController@massDestroy')->name('tickets.massDestroy');
     Route::post('tickets/media', 'TicketsController@storeMedia')->name('tickets.storeMedia');
-    Route::post('tickets/comment/{ticket}', 'TicketsControllerTicketsController@storeComment')->name('tickets.storeComment');
+    Route::post('tickets/comment/{ticket}', 'TicketsController@storeComment')->name('tickets.storeComment');
     Route::resource('tickets', 'TicketsController');
 
     //links
