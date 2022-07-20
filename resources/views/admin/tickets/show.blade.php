@@ -114,7 +114,7 @@
                                 <div class="row">
                                     <div class="col">
                                         <p class="font-weight-bold"><a href="mailto:{{ $comment->author_email }}">{{ $comment->author_name }}</a> ({{ $comment->created_at }})</p>
-                                        <p>{{ $comment->comment_text }}</p>
+                                        <p>{!! $comment->comment_text !!}</p>
                                     </div>
                                 </div>
                                 <hr />
@@ -154,4 +154,12 @@
         </nav>
     </div>
 </div>
+@endsection
+@section('scripts')
+    <script>
+        CKEDITOR.replace( 'comment_text' ,{
+            filebrowserUploadUrl: "{{route('ckeditor.image-upload', ['_token' => csrf_token() ])}}",
+            filebrowserUploadMethod: 'form'
+        });
+    </script>
 @endsection

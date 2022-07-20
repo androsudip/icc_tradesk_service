@@ -16,6 +16,7 @@
         "laravel/passport": "^10.0",
         "laravel/tinker": "^2.0",
         "laravel/ui": "^3.0",
+        "razorpay/razorpay": "^2.8",
         "spatie/laravel-medialibrary": "^8.7",
         "yajra/laravel-datatables-oracle": "^9.6"
     },

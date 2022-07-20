@@ -9,6 +9,7 @@ use App\Http\Requests\MassDestroyTicketRequest;
 use App\Http\Requests\StoreTicketRequest;
 use App\Http\Requests\UpdateTicketRequest;
 use App\Priority;
+use App\Service;
 use App\Status;
 use App\Ticket;
 use App\User;
@@ -68,11 +69,8 @@ class TicketsController extends Controller
                 return $row->priority ? $row->priority->color : '#000000';
             });
 
-            $table->addColumn('category_name', function ($row) {
-                return $row->category ? $row->category->name : '';
-            });
-            $table->addColumn('category_color', function ($row) {
-                return $row->category ? $row->category->color : '#000000';
+            $table->addColumn('service_name', function ($row) {
+                return $row->service ? $row->service->name : '';
             });
 
             $table->editColumn('author_name', function ($row) {
@@ -97,12 +95,11 @@ class TicketsController extends Controller
 
             return $table->make(true);
         }
-
         $priorities = Priority::all();
         $statuses = Status::all();
-        $categories = Category::all();
+        $services = Service::all();
 
-        return view('admin.tickets.index', compact('priorities', 'statuses', 'categories'));
+        return view('admin.tickets.index', compact('priorities', 'statuses', 'services'));
     }
 
     public function create()
@@ -113,7 +110,7 @@ class TicketsController extends Controller
 
         $priorities = Priority::all()->pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        $categories = Category::all()->pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $services = Service::where('status','1')->orderBy('created_at','desc')->get();
 
         $assigned_to_users = User::whereHas('roles', function($query) {
                 $query->whereId(2);
@@ -121,7 +118,7 @@ class TicketsController extends Controller
             ->pluck('name', 'id')
             ->prepend(trans('global.pleaseSelect'), '');
 
-        return view('admin.tickets.create', compact('statuses', 'priorities', 'categories', 'assigned_to_users'));
+        return view('admin.tickets.create', compact('statuses', 'priorities', 'services', 'assigned_to_users'));
     }
 
     public function store(StoreTicketRequest $request)
@@ -146,7 +143,7 @@ class TicketsController extends Controller
 
         $priorities = Priority::all()->pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        $categories = Category::all()->pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $services = Service::where('status','1')->orderBy('created_at','desc')->get();
 
         $assigned_to_users = User::whereHas('roles', function($query) {
                 $query->whereId(2);
@@ -156,7 +153,7 @@ class TicketsController extends Controller
 
         $ticket->load('status', 'priority', 'category', 'assigned_to_user');
 
-        return view('admin.tickets.edit', compact('statuses', 'priorities', 'categories', 'assigned_to_users', 'ticket'));
+        return view('admin.tickets.edit', compact('statuses', 'priorities', 'services', 'assigned_to_users', 'ticket'));
     }
 
     public function update(UpdateTicketRequest $request, Ticket $ticket)

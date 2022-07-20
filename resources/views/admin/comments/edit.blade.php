@@ -81,3 +81,11 @@
     </div>
 </div>
 @endsection
+@section('scripts')
+    <script>
+        CKEDITOR.replace( 'comment_text' ,{
+            filebrowserUploadUrl: "{{route('ckeditor.image-upload', ['_token' => csrf_token() ])}}",
+            filebrowserUploadMethod: 'form'
+        });
+    </script>
+@endsection

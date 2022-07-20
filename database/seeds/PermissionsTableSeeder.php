@@ -184,6 +184,46 @@ class PermissionsTableSeeder extends Seeder
                 'id'    => '44',
                 'title' => 'dashboard_access',
             ],
+            [
+                'id'    => '45',
+                'title' => 'link_generate_create',
+            ],
+            [
+                'id'    => '46',
+                'title' => 'link_generate_edit',
+            ],
+            [
+                'id'    => '47',
+                'title' => 'link_generate_show',
+            ],
+            [
+                'id'    => '48',
+                'title' => 'link_generate_delete',
+            ],
+            [
+                'id'    => '49',
+                'title' => 'link_generate_access',
+            ],
+            [
+                'id'    => '50',
+                'title' => 'service_create',
+            ],
+            [
+                'id'    => '51',
+                'title' => 'service_edit',
+            ],
+            [
+                'id'    => '52',
+                'title' => 'service_show',
+            ],
+            [
+                'id'    => '53',
+                'title' => 'service_delete',
+            ],
+            [
+                'id'    => '54',
+                'title' => 'service_access',
+            ]
         ];
 
         Permission::insert($permissions);

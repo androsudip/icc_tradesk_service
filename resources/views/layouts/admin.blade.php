@@ -21,6 +21,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css" rel="stylesheet" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.5.1/min/dropzone.min.css" rel="stylesheet" />
     <link href="{{ asset('css/custom.css') }}" rel="stylesheet" />
+    <script src="https://cdn.ckeditor.com/4.19.0/standard/ckeditor.js"></script>
     @yield('styles')
 </head>
 
@@ -199,6 +200,7 @@
 });
 
     </script>
+    <script src="//cdn.ckeditor.com/4.14.1/standard/ckeditor.js"></script>
     @yield('scripts')
 </body>
 

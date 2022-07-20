@@ -37,7 +37,6 @@ class TicketController extends Controller
             'author_email'  => 'required|email',
         ]);
         $request->request->add([
-            'category_id'   => 1,
             'status_id'     => 1,
             'priority_id'   => 1
         ]);

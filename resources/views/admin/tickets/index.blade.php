@@ -34,13 +34,7 @@
                         {{ trans('cruds.ticket.fields.priority') }}
                     </th>
                     <th>
-                        {{ trans('cruds.ticket.fields.category') }}
-                    </th>
-                    <th>
-                        {{ trans('cruds.ticket.fields.author_name') }}
-                    </th>
-                    <th>
-                        {{ trans('cruds.ticket.fields.author_email') }}
+                        {{ trans('cruds.ticket.fields.service') }}
                     </th>
                     <th>
                         {{ trans('cruds.ticket.fields.assigned_to_user') }}
@@ -81,8 +75,8 @@ let filters = `
   <div class="form-group mx-sm-3 mb-2">
     <select class="form-control" name="category">
       <option value="">All categories</option>
-      @foreach($categories as $category)
-        <option value="{{ $category->id }}"{{ request('category') == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
+      @foreach($services as $service)
+        <option value="{{ $service->id }}"{{ request('service') == $service->id ? 'selected' : '' }}>{{ $service->name }}</option>
       @endforeach
     </select>
   </div>
@@ -132,7 +126,7 @@ $('.card-body').on('change', 'select', function() {
       data: {
         'status': searchParams.get('status'),
         'priority': searchParams.get('priority'),
-        'category': searchParams.get('category')
+        'service': searchParams.get('service')
       }
     },
     columns: [
@@ -140,40 +134,38 @@ $('.card-body').on('change', 'select', function() {
 { data: 'id', name: 'id' },
 {
     data: 'title',
-    name: 'title', 
+    name: 'title',
     render: function ( data, type, row) {
         return '<a href="'+row.view_link+'">'+data+' ('+row.comments_count+')</a>';
     }
 },
-{ 
-  data: 'status_name', 
-  name: 'status.name', 
+{
+  data: 'status_name',
+  name: 'status.name',
   render: function ( data, type, row) {
       return '<span style="color:'+row.status_color+'">'+data+'</span>';
   }
 },
-{ 
-  data: 'priority_name', 
-  name: 'priority.name', 
+{
+  data: 'priority_name',
+  name: 'priority.name',
   render: function ( data, type, row) {
       return '<span style="color:'+row.priority_color+'">'+data+'</span>';
   }
 },
-{ 
-  data: 'category_name', 
-  name: 'category.name', 
+{
+  data: 'service_name',
+  name: 'service.name',
   render: function ( data, type, row) {
       return '<span style="color:'+row.category_color+'">'+data+'</span>';
-  } 
+  }
 },
-{ data: 'author_name', name: 'author_name' },
-{ data: 'author_email', name: 'author_email' },
 { data: 'assigned_to_user_name', name: 'assigned_to_user.name' },
 { data: 'actions', name: '{{ trans('global.actions') }}' }
     ],
     order: [[ 1, 'desc' ]],
     pageLength: 100,
-  };    
+  };
 $(".datatable-Ticket").one("preInit.dt", function () {
  $(".dataTables_filter").after(filters);
 });

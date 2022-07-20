@@ -19,6 +19,8 @@ Auth::routes(['register' => true]);
 Route::post('tickets/comment/{ticket}', 'TicketController@storeComment')->name('tickets.storeComment');
 Route::resource('tickets', 'TicketController')->only(['show', 'create', 'store']);*/
 
+Route::post('ckeditor/upload', 'CKEditorController@upload')->name('ckeditor.image-upload');
+
 Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'middleware' => ['auth']], function () {
     Route::get('/', 'HomeController@index')->name('home');
     // Permissions
@@ -45,11 +47,20 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::delete('categories/destroy', 'CategoriesController@massDestroy')->name('categories.massDestroy');
     Route::resource('categories', 'CategoriesController');
 
+    //service manager
+    Route::delete('services/destroy', 'ServicesController@massDestroy')->name('services.massDestroy');
+    Route::post('services/media', 'ServicesController@storeMedia')->name('services.storeMedia');
+    Route::resource('services', 'ServicesController');
+
     // Tickets
     Route::delete('tickets/destroy', 'TicketsController@massDestroy')->name('tickets.massDestroy');
     Route::post('tickets/media', 'TicketsController@storeMedia')->name('tickets.storeMedia');
     Route::post('tickets/comment/{ticket}', 'TicketsController@storeComment')->name('tickets.storeComment');
     Route::resource('tickets', 'TicketsController');
+
+    //links
+    Route::delete('links/destroy', 'LinksController@massDestroy')->name('links.massDestroy');
+    Route::resource('links', 'LinksController');
 
     // Comments
     Route::delete('comments/destroy', 'CommentsController@massDestroy')->name('comments.massDestroy');

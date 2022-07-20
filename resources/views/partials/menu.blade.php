@@ -94,6 +94,16 @@
                     </a>
                 </li>
             @endcan
+            @can('service_access')
+                <li class="nav-item">
+                    <a href="{{ route("admin.services.index") }}" class="nav-link {{ request()->is('admin/services') || request()->is('admin/services/*') ? 'active' : '' }}">
+                        <i class="fa-fw fas fa-comment nav-icon">
+
+                        </i>
+                        {{ trans('cruds.services.title') }}
+                    </a>
+                </li>
+            @endcan
             @can('ticket_access')
                 <li class="nav-item">
                     <a href="{{ route("admin.tickets.index") }}" class="nav-link {{ request()->is('admin/tickets') || request()->is('admin/tickets/*') ? 'active' : '' }}">
@@ -111,6 +121,16 @@
 
                         </i>
                         {{ trans('cruds.comment.title') }}
+                    </a>
+                </li>
+            @endcan
+            @can('link_generate_access')
+                <li class="nav-item">
+                    <a href="{{ route("admin.links.index") }}" class="nav-link {{ request()->is('admin/links') || request()->is('admin/links/*') ? 'active' : '' }}">
+                        <i class="fa-fw fas fa-comment nav-icon">
+
+                        </i>
+                        {{ trans('cruds.links.title') }}
                     </a>
                 </li>
             @endcan

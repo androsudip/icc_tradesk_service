@@ -36,7 +36,7 @@ class Ticket extends Model implements HasMedia
         'updated_at',
         'deleted_at',
         'priority_id',
-        'category_id',
+        'service_id',
         'author_name',
         'author_email',
         'assigned_to_user_id',
@@ -59,6 +59,16 @@ class Ticket extends Model implements HasMedia
     public function comments()
     {
         return $this->hasMany(Comment::class, 'ticket_id', 'id');
+    }
+
+    public function service()
+    {
+        return $this->hasOne(Service::class, 'id', 'service_id');
+    }
+
+    public function user()
+    {
+        return $this->hasOne(User::class, 'id', 'assigned_to_user_id');
     }
 
     public function getAttachmentsAttribute()
@@ -117,7 +127,7 @@ class Ticket extends Model implements HasMedia
                     })
                     ->orWhereHas('tickets', function ($q) {
                         return $q->whereId($this->id);
-                    }); 
+                    });
                 });
             })
             ->when(!$comment->user_id && !$this->assigned_to_user_id, function ($q) {

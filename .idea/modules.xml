@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/icc_trade_ticket_laravel.iml" filepath="$PROJECT_DIR$/.idea/icc_trade_ticket_laravel.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/icc_tradesk_service.iml" filepath="$PROJECT_DIR$/.idea/icc_tradesk_service.iml" />
     </modules>
   </component>
 </project>

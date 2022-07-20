@@ -67,7 +67,7 @@
                                 {{ $comment->user->name ?? '' }}
                             </td>
                             <td>
-                                {{ $comment->comment_text ?? '' }}
+                                {!! $comment->comment_text ?? '' !!}
                             </td>
                             <td>
                                 @can('comment_show')
