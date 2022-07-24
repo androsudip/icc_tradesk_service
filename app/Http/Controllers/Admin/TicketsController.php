@@ -2,20 +2,27 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Bill;
 use App\Category;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Traits\MediaUploadingTrait;
 use App\Http\Requests\MassDestroyTicketRequest;
 use App\Http\Requests\StoreTicketRequest;
 use App\Http\Requests\UpdateTicketRequest;
+use App\Payments;
 use App\Priority;
+use App\Role;
+use App\RoleUser;
 use App\Service;
 use App\Status;
 use App\Ticket;
+use App\TicketServices;
 use App\User;
 use Gate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
+use Razorpay\Api\Api;
 use Symfony\Component\HttpFoundation\Response;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -26,8 +33,9 @@ class TicketsController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $query = Ticket::with(['status', 'priority', 'category', 'assigned_to_user', 'comments'])
+            $query = Ticket::with(['ticketServices','status', 'priority', 'category', 'assigned_to_user', 'comments'])
                 ->filterTickets($request)
+                ->where('assigned_to_user_id',Auth::user()->id)
                 ->select(sprintf('%s.*', (new Ticket)->table));
             $table = Datatables::of($query);
 
@@ -67,10 +75,6 @@ class TicketsController extends Controller
             });
             $table->addColumn('priority_color', function ($row) {
                 return $row->priority ? $row->priority->color : '#000000';
-            });
-
-            $table->addColumn('service_name', function ($row) {
-                return $row->service ? $row->service->name : '';
             });
 
             $table->editColumn('author_name', function ($row) {
@@ -123,11 +127,23 @@ class TicketsController extends Controller
 
     public function store(StoreTicketRequest $request)
     {
+        $user_id = Auth::user()->id;
+        $service_id = $request->input('service_id');
+        if(is_array($service_id) && count($service_id) > 1)    {
+            $roleId = Role::where('title',config('constant.department_user_title'))->pluck('id');
+            $user = User::with(['roles'])->whereHas('roles',function ($query) use($roleId){
+                $query->where('id',$roleId);
+            })->pluck('id');
+            if(!empty($user) && $user != null){
+                $user_id = $user->first();
+            }
+        }
         $request->request->add([
-            'assigned_to_user_id'   => Auth::user()->id,
+            'assigned_to_user_id'   => $user_id,
             'status_id' => 1 //open
         ]);
         $ticket = Ticket::create($request->all());
+        $ticket->ticketServices()->sync($request->input('service_id', []));
 
         foreach ($request->input('attachments', []) as $file) {
             $ticket->addMedia(storage_path('tmp/uploads/' . $file))->toMediaCollection('attachments');
@@ -152,14 +168,29 @@ class TicketsController extends Controller
             ->pluck('name', 'id')
             ->prepend(trans('global.pleaseSelect'), '');
 
-        $ticket->load('status', 'priority', 'category', 'assigned_to_user');
+        $ticket->load('ticketServices','status', 'priority', 'category', 'assigned_to_user');
 
         return view('admin.tickets.edit', compact('statuses', 'priorities', 'services', 'assigned_to_users', 'ticket'));
     }
 
     public function update(UpdateTicketRequest $request, Ticket $ticket)
     {
+        $user_id = Auth::user()->id;
+        $service_id = $request->input('service_id');
+        if(is_array($service_id) && count($service_id) > 1)    {
+            $roleId = Role::where('title',config('constant.department_user_title'))->pluck('id');
+            $user = User::with(['roles'])->whereHas('roles',function ($query) use($roleId){
+                $query->where('id',$roleId);
+            })->pluck('id');
+            if(!empty($user) && $user != null){
+                $user_id = $user->first();
+            }
+        }
+        $request->request->add([
+            'assigned_to_user_id'   => $user_id,
+        ]);
         $ticket->update($request->all());
+        $ticket->ticketServices()->sync($request->input('service_id', []));
 
         if (count($ticket->attachments) > 0) {
             foreach ($ticket->attachments as $media) {
@@ -221,5 +252,57 @@ class TicketsController extends Controller
         $ticket->sendCommentNotification($comment);
 
         return redirect()->back()->withStatus('Your comment added successfully');
+    }
+
+    public function getServices(Request $request)
+    {
+        $ticket_id = $request->input('id');
+        if($ticket_id){
+            $services = Service::join('service_ticket','service_id','id')->where('service_ticket.ticket_id',$ticket_id)->get();
+            return $services;
+        }
+    }
+
+    public function getResponse(Request $request){
+        $payment_id = $request->input('razorpay_payment_id');
+        $payment_link_id = $request->input('razorpay_payment_link_id');
+        $payment_link_reference_id = $request->input('razorpay_payment_link_reference_id');
+        $payment_link_status = $request->input('razorpay_payment_link_status');
+        $signature = $request->input('razorpay_signature');
+        $api = new Api(config('constant.razorpay_key'),config('constant.razorpay_secret'));
+        $payment = $api->payment->fetch($payment_id);
+        $cost = ($payment->amount/100);
+        if($payment){
+            $billId= $payment->notes->bill_id;
+            Payments::insert([
+                'payment_id' => $payment_id,
+                'payment_link_id' => $payment_link_id,
+                'payment_link_reference_id' => $payment_link_reference_id,
+                'payment_link_status' => $payment_link_status,
+                'signature' => $signature,
+                'method' => $payment->method,
+                'amount' => $cost,
+                'bill_id' => $payment->notes->bill_id
+            ]);
+            if($payment->status == 'captured'){
+                $bill = Bill::where('id',$billId)->first();
+                $paidCost = $cost;
+                if($bill->remaining_cost != 0){
+                    $paidCost = $bill->remaining_cost - $cost;
+                }
+                $bill = Bill::where('id',$billId)->update([
+                    'remaining_cost' => $paidCost
+                ]);
+                Session::flash('message', 'Your Payment is Successfully');
+                Session::flash('alert-class', 'alert-success');
+
+            }else{
+                Session::flash('message', 'Your Payment is Failed');
+                Session::flash('alert-class', 'alert-danger');
+
+            }
+        }
+
+        return redirect()->route('admin.tickets.index');
     }
 }

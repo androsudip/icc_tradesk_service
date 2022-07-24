@@ -28,7 +28,7 @@ class StoreTicketRequest extends FormRequest
             ],
             'service_id' => [
                 'required',
-                'integer',
+                'array',
             ],
         ];
     }

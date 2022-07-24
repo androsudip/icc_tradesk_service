@@ -43,6 +43,24 @@
                         </div>
 
                         <div class="form-group row">
+                            <label for="country" class="col-md-4 col-form-label text-md-right">country</label>
+
+                            <div class="col-md-6">
+                                <select name="country" id="country" class="form-control select2" required>
+                                    <option value="" selected>Select Country</option>
+                                    @foreach($countries as $id => $country)
+                                        <option value="{{ $country->id }}" >{{ $country->name }}</option>
+                                    @endforeach
+                                </select>
+                                @error('country')
+                                <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
                             <label for="city" class="col-md-4 col-form-label text-md-right">City</label>
 
                             <div class="col-md-6">
@@ -120,6 +138,20 @@
                             </div>
                         </div>
 
+                        <div class="form-group row">
+                            <label for="isMember" class="col-md-4 col form-check-label text-md-right">ICC Member ?</label>
+                            <div class="col-md-6">
+                                <input id="isMember" type="checkbox" class="form-check-input ml-2 icc_member_change" name="isMember">
+                            </div>
+                        </div>
+
+                        <div class="form-group row icc_member_id_input" style="display: none;">
+                            <label for="icc_member_id" class="col-md-4 col form-label text-md-right">Member Id</label>
+                            <div class="col-md-6">
+                                <input id="icc_member_id" type="text" class="form-control ml-2 " name="icc_member_id">
+                            </div>
+                        </div>
+
                         <div class="form-group row mb-0">
                             <div class="col-md-2 offset-md-4">
                                 <button type="submit" class="btn btn-primary">
@@ -138,4 +170,15 @@
         </div>
     </div>
 </div>
+@endsection
+@section('scripts')
+    <script>
+        $(".icc_member_change").on('change',function () {
+            if ($(this).prop('checked')==true){
+                $(".icc_member_id_input").show();
+            }else{
+                $(".icc_member_id_input").hide();
+            }
+        });
+    </script>
 @endsection

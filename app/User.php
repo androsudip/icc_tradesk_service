@@ -33,6 +33,8 @@ class User extends Authenticatable
         'name',
         'email',
         'number',
+        'country_id',
+        'member_id',
         'city',
         'company',
         'designation',

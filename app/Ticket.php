@@ -36,11 +36,15 @@ class Ticket extends Model implements HasMedia
         'updated_at',
         'deleted_at',
         'priority_id',
-        'service_id',
         'author_name',
         'author_email',
         'assigned_to_user_id',
     ];
+
+    public function ticketServices()
+    {
+        return $this->belongsToMany(Service::class);
+    }
 
     public static function boot()
     {

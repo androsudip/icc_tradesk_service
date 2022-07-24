@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Countries;
 use App\Http\Controllers\Controller;
 use App\RoleUser;
 use App\User;
@@ -44,6 +45,12 @@ class RegisterController extends Controller
         $this->middleware('guest');
     }
 
+    public function showRegistrationForm()
+    {
+        $countries = Countries::all();
+        return view('auth.register',compact('countries'));
+    }
+
     /**
      * Get a validator for an incoming registration request.
      *
@@ -57,9 +64,10 @@ class RegisterController extends Controller
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             'number' => ['required', 'numeric'],
-            'city' => ['required', 'string',],
-            'company' => ['required', 'string',],
-            'designation' => ['required', 'string',],
+            'country' => ['required', 'numeric'],
+            'city' => ['required', 'string'],
+            'company' => ['required', 'string'],
+            'designation' => ['required', 'string'],
         ]);
     }
 
@@ -100,9 +108,11 @@ class RegisterController extends Controller
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
             'number' => $data['number'],
+            'country_id' => $data['country'],
             'city' => $data['city'],
             'company' => $data['company'],
             'designation' => $data['designation'],
+            'member_id' => $data['icc_member_id'],
         ]);
 
     }

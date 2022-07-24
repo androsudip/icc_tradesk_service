@@ -134,6 +134,16 @@
                     </a>
                 </li>
             @endcan
+            @can('bill_generate_access')
+                <li class="nav-item">
+                    <a href="{{ route("admin.bills.index") }}" class="nav-link {{ request()->is('admin/bills') || request()->is('admin/bills/*') ? 'active' : '' }}">
+                        <i class="fa-fw fas fa-comment nav-icon">
+
+                        </i>
+                        {{ trans('cruds.bills.title') }}
+                    </a>
+                </li>
+            @endcan
             <li class="nav-item">
                 <a href="#" class="nav-link" onclick="event.preventDefault(); document.getElementById('logoutform').submit();">
                     <i class="nav-icon fas fa-fw fa-sign-out-alt">

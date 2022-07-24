@@ -22,6 +22,9 @@ Route::resource('tickets', 'TicketController')->only(['show', 'create', 'store']
 
 Route::post('ckeditor/upload', 'CKEditorController@upload')->name('ckeditor.image-upload');
 
+//response call back
+Route::get('callback_url', 'Admin\TicketsController@getResponse')->name('callback_url');
+
 Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'middleware' => ['auth']], function () {
     Route::get('/', 'HomeController@index')->name('home');
     // Permissions
@@ -35,6 +38,10 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     // Users
     Route::delete('users/destroy', 'UsersController@massDestroy')->name('users.massDestroy');
     Route::resource('users', 'UsersController');
+
+    // Departments
+    Route::delete('dept/destroy', 'DeptsController@massDestroy')->name('dept.massDestroy');
+    Route::resource('dept', 'DeptsController');
 
     // Statuses
     Route::delete('statuses/destroy', 'StatusesController@massDestroy')->name('statuses.massDestroy');
@@ -57,11 +64,16 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::delete('tickets/destroy', 'TicketsController@massDestroy')->name('tickets.massDestroy');
     Route::post('tickets/media', 'TicketsController@storeMedia')->name('tickets.storeMedia');
     Route::post('tickets/comment/{ticket}', 'TicketsController@storeComment')->name('tickets.storeComment');
+    Route::get('tickets/getServices', 'TicketsController@getServices')->name('tickets.getServices');
     Route::resource('tickets', 'TicketsController');
 
     //links
     Route::delete('links/destroy', 'LinksController@massDestroy')->name('links.massDestroy');
     Route::resource('links', 'LinksController');
+
+    //bills
+    Route::delete('bills/destroy', 'BillsController@massDestroy')->name('bills.massDestroy');
+    Route::resource('bills', 'BillsController');
 
     // Comments
     Route::delete('comments/destroy', 'CommentsController@massDestroy')->name('comments.massDestroy');

@@ -63,9 +63,8 @@
             </div>
             <div class="form-group {{ $errors->has('service_id') ? 'has-error' : '' }}">
                 <label for="service_id">{{ trans('cruds.ticket.fields.service') }}*</label>
-                <select name="service_id" id="service_id" class="form-control select2" required>
+                <select name="service_id[]" id="service_id" class="form-control select2" multiple="true" required>
                     @foreach($services as $id => $service)
-                        <option value="" selected>Please Select</option>
                         <option value="{{ $service->id }}" {{ old('service_id') == $service->id ? 'selected' : '' }}>{{ $service->name .' - '. $service->id }}</option>
                     @endforeach
                 </select>

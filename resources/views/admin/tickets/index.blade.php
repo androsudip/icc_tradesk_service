@@ -34,9 +34,6 @@
                         {{ trans('cruds.ticket.fields.priority') }}
                     </th>
                     <th>
-                        {{ trans('cruds.ticket.fields.service') }}
-                    </th>
-                    <th>
                         {{ trans('cruds.ticket.fields.assigned_to_user') }}
                     </th>
                     <th>
@@ -151,13 +148,6 @@ $('.card-body').on('change', 'select', function() {
   name: 'priority.name',
   render: function ( data, type, row) {
       return '<span style="color:'+row.priority_color+'">'+data+'</span>';
-  }
-},
-{
-  data: 'service_name',
-  name: 'service.name',
-  render: function ( data, type, row) {
-      return '<span style="color:'+row.category_color+'">'+data+'</span>';
   }
 },
 { data: 'assigned_to_user_name', name: 'assigned_to_user.name' },

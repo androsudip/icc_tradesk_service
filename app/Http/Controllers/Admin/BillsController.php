@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Bill;
+use App\BillTicketServices;
 use App\Http\Requests\MassDestroyTicketRequest;
 use App\Link;
 use App\Service;
@@ -16,7 +17,7 @@ use Razorpay\Api\Api;
 use Symfony\Component\HttpFoundation\Response;
 use Yajra\DataTables\Facades\DataTables;
 
-class LinksController extends Controller
+class BillsController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -63,17 +64,15 @@ class LinksController extends Controller
             });
 
             $table->addColumn('view_link', function ($row) {
-                return route('admin.links.show', $row->id);
+                return route('admin.bills.show', $row->id);
             });
-
             return $table->make(true);
         }
 
-        $links = Link::with('tickets.user')
-            ->whereHas('tickets',function ($query){
-                $query->where('assigned_to_user_id',Auth::user()->id);
-            })->orderBy('created_at', 'desc')->get();
-        return view('admin.links.index', compact('links'));
+        $bills = Bill::with(['ticket','billServices.ticket','billServices.services'])
+            ->where('created_by',Auth::user()->id)
+            ->orderBy('created_at', 'desc')->get();
+        return view('admin.bills.index', compact('bills'));
     }
 
     /**
@@ -83,10 +82,10 @@ class LinksController extends Controller
      */
     public function create()
     {
-        $bills = Bill::with('billServices','ticket','user')
-                    ->where('created_by',Auth::user()->id)
-                    ->orderBy('created_at', 'desc')->get();
-        return view('admin.links.create', compact('bills'));
+        $tickets = Ticket::with('ticketServices','user')
+                        ->where('assigned_to_user_id',Auth::user()->id)
+                        ->orderBy('created_at', 'desc')->get();
+        return view('admin.bills.create', compact('tickets'));
     }
 
     /**
@@ -97,57 +96,36 @@ class LinksController extends Controller
      */
     public function store(Request $request)
     {
-        abort_if(Gate::denies('link_generate_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-
-        $bill_id = $request->bill_id;
-        $bill = Bill::find($bill_id);
-        $user = User::find($bill->created_by);
-        $ticket = Ticket::find($bill->created_by);
-        $remarks = $request->remarks;
-        $cost = ($request->cost * 100);
-       // $cost = number_format( $cost, 2);
-        $api = new Api(config('constant.razorpay_key'),config('constant.razorpay_secret'));
-
-        $callback = config('constant.base_url').'callback_url';
-        $url = $api->paymentLink->create([
-                'amount' => (int)$cost,
-                'currency' => 'INR',
-                'description' => $ticket->title .' Service',
-                'customer' => [
-                    'name' => $user->name,
-                    'email' => $user->email,
-                    'contact' => $user->number
-                ],
-                'notify' => [
-                    'sms' => true,
-                    'email' => true
-                ],
-                'reminder_enable' => true,
-                'notes' => [
-                    'ticket_id' => $ticket->id,
-                    'ticket_name' => $ticket->title,
-                    'bill_id' => $bill_id,
-                    'cost' => $cost
-                ],
-                'callback_url' => $callback,
-                'callback_method' => 'get'
-        ]);
-        if($url){
-            $bill = Bill::where('id',$bill_id)->first();
-            $remaining_cost = (int)$bill->bill_cost - $request->cost;
-            $links = Link::insert([
-                'ticket_id' => $ticket->id,
-                'bill_id' => $bill_id,
-                'payment_url' => $url->short_url,
-                'cost' => $request->cost,
+        abort_if(Gate::denies('bill_generate_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        $service_ids = $request->input('service_ids');
+        $ticket_id = $request->input('ticket_id');
+        $service_ids= explode(",",$service_ids);
+        $service_ids = array_filter($service_ids);
+        $bill_services = [];
+        $services = [];
+        $total = 0;
+        foreach ($service_ids as $value){
+            $cost = $request->input('cost_'.$value);
+            $remarks = $request->input('remarks_'.$value);
+            $services[] = [
+                'ticket_id' => $ticket_id,
+                'service_id' => $value,
+                'updated_cost' => $cost,
                 'remarks' => $remarks,
-                'status' => $url->status,
-                'payment_link_id' => $url->id,
-                'payment_link_json' => json_encode($url->toArray()),
-            ]);
+            ];
+            $total += $cost;
         }
+        $bill = Bill::create([
+            'ticket_id' => $ticket_id,
+            'bill_cost' => $total,
+            'created_by' => Auth::user()->id
+        ]);
+        foreach ($services as $key => $value){
+            $services[$key]['bill_id'] = $bill->id;
+        }
+        BillTicketServices::insert($services);
 
-        return redirect()->route('admin.links.index');
+        return redirect()->route('admin.bills.index');
     }
 
     /**
@@ -158,10 +136,12 @@ class LinksController extends Controller
      */
     public function show($id)
     {
-        abort_if(Gate::denies('link_generate_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        abort_if(Gate::denies('bill_generate_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $links = Link::with('tickets.user')->where('id',$id)->first();
-        return view('admin.links.show', compact('links'));
+        $bills = Bill::with(['ticket','billServices.ticket','billServices.services'])
+                    ->where('created_by',Auth::user()->id)
+                    ->where('id',$id)->first();
+        return view('admin.bills.show', compact('bills'));
     }
 
     /**

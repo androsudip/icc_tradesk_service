@@ -76,9 +76,9 @@
             </div>
             <div class="form-group {{ $errors->has('service_id') ? 'has-error' : '' }}">
                 <label for="service_id">{{ trans('cruds.ticket.fields.service') }}*</label>
-                <select name="service_id" id="service_id" class="form-control select2" required>
+                <select name="service_id[]" id="service_id" class="form-control select2" multiple="multiple" required>
                     @foreach($services as $id => $service)
-                        <option value="{{ $service->id }}" {{ (isset($service) && $service ? $service->id : old('service_id')) == $service->id ? 'selected' : '' }}>{{ $service->name .' - '. $service->id }}</option>
+                        <option value="{{ $service->id }}" {{ (in_array($ticket->id, old('permissions', [])) || isset($ticket) && $ticket->ticketServices->contains($service->id)) ? 'selected' : '' }}>{{ $service->name .' - '. $service->id }}</option>
                     @endforeach
                 </select>
                 @if($errors->has('service_id'))

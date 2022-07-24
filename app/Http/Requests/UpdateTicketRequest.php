@@ -32,7 +32,7 @@ class UpdateTicketRequest extends FormRequest
             ],
             'service_id' => [
                 'required',
-                'integer',
+                'array',
             ],
         ];
     }

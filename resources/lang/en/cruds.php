@@ -5,6 +5,10 @@ return [
         'title'          => 'User management',
         'title_singular' => 'User management',
     ],
+    'deptManagement' => [
+        'title'          => 'Dept. management',
+        'title_singular' => 'Dept. management',
+    ],
     'permission'     => [
         'title'          => 'Permissions',
         'title_singular' => 'Permission',
@@ -42,6 +46,32 @@ return [
     'user'           => [
         'title'          => 'Users',
         'title_singular' => 'User',
+        'fields'         => [
+            'id'                       => 'ID',
+            'id_helper'                => '',
+            'name'                     => 'Name',
+            'name_helper'              => '',
+            'email'                    => 'Email',
+            'email_helper'             => '',
+            'email_verified_at'        => 'Email verified at',
+            'email_verified_at_helper' => '',
+            'password'                 => 'Password',
+            'password_helper'          => '',
+            'roles'                    => 'Roles',
+            'roles_helper'             => '',
+            'remember_token'           => 'Remember Token',
+            'remember_token_helper'    => '',
+            'created_at'               => 'Created at',
+            'created_at_helper'        => '',
+            'updated_at'               => 'Updated at',
+            'updated_at_helper'        => '',
+            'deleted_at'               => 'Deleted at',
+            'deleted_at_helper'        => '',
+        ],
+    ],
+    'dept'           => [
+        'title'          => 'Department',
+        'title_singular' => 'Department',
         'fields'         => [
             'id'                       => 'ID',
             'id_helper'                => '',
@@ -120,7 +150,7 @@ return [
         ],
     ],
     'ticket'         => [
-        'title'          => 'Tickets',
+        'title'          => 'Service/Support Request',
         'title_singular' => 'Ticket',
         'fields'         => [
             'id'                      => 'ID',
@@ -205,7 +235,29 @@ return [
     ],
     'links'       => [
         'title'          => 'Link Manager',
-        'title_singular' => 'Link Manager',
+        'title_singular' => 'Link',
+        'fields'         => [
+            'id'                  => 'ID',
+            'id_helper'           => '',
+            'ticket_id'         => 'Ticket Id',
+            'ticket_id_helper'  => '',
+            'ticket_name'         => 'Ticket Name',
+            'ticket_name_helper'  => '',
+            'link'         => 'Razorpay Payment Link',
+            'link_helper'  => '',
+            'cost' => 'Billing Cost',
+            'cost_helper' => '',
+            'user' => 'User',
+            'user_helper' => '',
+            'service' => 'Service Name',
+            'service_helper' => '',
+            'remarks' => 'Remarks',
+            'remarks_helper' => ''
+        ],
+    ],
+    'bills'       => [
+        'title'          => 'Bills Manager',
+        'title_singular' => 'Bills',
         'fields'         => [
             'id'                  => 'ID',
             'id_helper'           => '',
@@ -222,7 +274,11 @@ return [
             'service' => 'Service Name',
             'service_helper' => '',
             'remarks' => 'Remarks',
-            'remarks_helper' => ''
+            'remarks_helper' => '',
+            'bill_cost' => 'Bill Cost',
+            'bill_cost_helper' => '',
+            'remaining_cost' => 'Remaining Cost',
+            'remaining_cost_helper' => '',
         ],
     ],
     'services'       => [

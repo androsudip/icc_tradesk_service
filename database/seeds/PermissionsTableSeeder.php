@@ -223,7 +223,51 @@ class PermissionsTableSeeder extends Seeder
             [
                 'id'    => '54',
                 'title' => 'service_access',
-            ]
+            ],
+            [
+                'id'    => '55',
+                'title' => 'dept_management_access',
+            ],
+            [
+                'id'    => '56',
+                'title' => 'dept_create',
+            ],
+            [
+                'id'    => '57',
+                'title' => 'dept_edit',
+            ],
+            [
+                'id'    => '58',
+                'title' => 'dept_show',
+            ],
+            [
+                'id'    => '59',
+                'title' => 'dept_delete',
+            ],
+            [
+                'id'    => '60',
+                'title' => 'dept_access',
+            ],
+            [
+                'id'    => '61',
+                'title' => 'bill_generate_create',
+            ],
+            [
+                'id'    => '62',
+                'title' => 'bill_generate_edit',
+            ],
+            [
+                'id'    => '63',
+                'title' => 'bill_generate_show',
+            ],
+            [
+                'id'    => '64',
+                'title' => 'bill_generate_delete',
+            ],
+            [
+                'id'    => '65',
+                'title' => 'bill_generate_access',
+            ],
         ];
 
         Permission::insert($permissions);

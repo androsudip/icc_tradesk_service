@@ -75,26 +75,10 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.ticket.fields.category') }}
+                            {{ trans('cruds.ticket.fields.service') }}
                         </th>
                         <td>
-                            {{ $ticket->category->name ?? '' }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>
-                            {{ trans('cruds.ticket.fields.author_name') }}
-                        </th>
-                        <td>
-                            {{ $ticket->author_name }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>
-                            {{ trans('cruds.ticket.fields.author_email') }}
-                        </th>
-                        <td>
-                            {{ $ticket->author_email }}
+                            {{ $ticket->ticketServices()->pluck('name') ?? '' }}
                         </td>
                     </tr>
                     <tr>
